@@ -16,7 +16,6 @@ contract CardContract is ERC721, Ownable {
     using Base64 for bytes;
     using CardUtils for CardUtils.NormalCard;
     using CardUtils for CardUtils.BattleCard;
-
     mapping(uint256 => CardUtils.Card) public CARDS;
     
     //TIPI DI CARTE
@@ -25,122 +24,121 @@ contract CardContract is ERC721, Ownable {
     mapping(uint256 => uint256) public RARE;
     mapping(uint256 => uint256) public ULTRA_RARE;
     mapping(uint256 => uint256) public MYTHIC;
-
     mapping(uint256 => CardUtils.NormalCard) public normalCard;
     mapping(uint256 => CardUtils.BattleCard) public battleCard;
-
     mapping(uint256 => CardUtils.CardType) private cardTypes;
 
     Counters.Counter private _tokenCounter;
-
     constructor() ERC721("CTA", "Season 1") {
-        mintCard(
-                CardUtils.CardType.Battle,
-                CardUtils.Card(
-                "1111",
-                "1111",
-                1,
-                1,
-                CardUtils.CardType.Battle,
-                "Good",
-                CardUtils.CardRarity.Common
-            ),
-            CardUtils.CardInfo(
-                "Shado",
-                "Shado",
-                1,
-                "J",
-                "G"
-            ), CardUtils.CardOwner(
-                "345",
-                0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB
-            ), CardUtils.CardAttr(
-                false,
-                false
-            ), CardUtils.CardExtra(
-                "Fire",
-                "Arkanthe",
-                "A",
-                2,
-                2,
-                4,
-                false
-            ) 
-            );
+      mintCard(
+            CardUtils.CardType.Battle,
+            CardUtils.Card(
+            "1111",
+            "1111",
+            1,
+            1,
+            CardUtils.CardType.Battle,
+            "Good",
+            CardUtils.CardRarity.Common
+        ),
+        CardUtils.CardInfo(
+            "Shado",
+            "Shado",
+            1,
+            "J",
+            "G"
+        ), CardUtils.CardOwner(
+            "345",
+            0x7D93107852454857C511b0c1E590b59B4cE34758
+        ), CardUtils.CardAttr(
+            false,
+            false
+        ), CardUtils.CardExtra(
+            "Fire",
+            "Arkanthe",
+            "A",
+            2,
+            2,
+            4,
+            false
+        ) );
 
-                mintCard(
-                CardUtils.CardType.Battle,
-                CardUtils.Card(
-                "2222",
-                "2222",
-                1,
-                1,
-                CardUtils.CardType.Battle,
-                "Good",
-                CardUtils.CardRarity.Mythic
-            ),
-            CardUtils.CardInfo(
-                "Shado",
-                "Shado",
-                2,
-                "J",
-                "G"
-            ), CardUtils.CardOwner(
-                "345",
-                0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB
-            ), CardUtils.CardAttr(
-                false,
-                false
-            ), CardUtils.CardExtra(
-                "Fire",
-                "Arkanthe",
-                "A",
-                2,
-                2,
-                4,
-                false
-            )
-        );
+            mintCard(
+            CardUtils.CardType.Battle,
+            CardUtils.Card(
+            "2222",
+            "2222",
+            1,
+            1,
+            CardUtils.CardType.Battle,
+            "Good",
+            CardUtils.CardRarity.Mythic
+        ),
+        CardUtils.CardInfo(
+            "Shado",
+            "Shado",
+            2,
+            "J",
+            "G"
+        ), CardUtils.CardOwner(
+            "345",
+            0x7D93107852454857C511b0c1E590b59B4cE34758
+        ), CardUtils.CardAttr(
+            false,
+            false
+        ), CardUtils.CardExtra(
+            "Fire",
+            "Arkanthe",
+            "A",
+            2,
+            2,
+            4,
+            false
+        ) );
 
         mintCard(
-                CardUtils.CardType.Battle,
-                CardUtils.Card(
-                "2222",
-                "2222",
-                1,
-                1,
-                CardUtils.CardType.Battle,
-                "Good",
-                CardUtils.CardRarity.Mythic
-            ),
-            CardUtils.CardInfo(
-                "Shado",
-                "Shado",
-                3,
-                "J",
-                "G"
-            ), CardUtils.CardOwner(
-                "345",
-                0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB
-            ), CardUtils.CardAttr(
-                false,
-                false
-            ), CardUtils.CardExtra(
-                "Fire",
-                "Arkanthe",
-                "A",
-                2,
-                2,
-                4,
-                false
-            ) 
-        );
+            CardUtils.CardType.Battle,
+            CardUtils.Card(
+            "3333",
+            "3333",
+            1,
+            1,
+            CardUtils.CardType.Battle,
+            "Good",
+            CardUtils.CardRarity.Mythic
+        ),
+        CardUtils.CardInfo(
+            "Shado",
+            "Shado",
+            3,
+            "J",
+            "G"
+        ), CardUtils.CardOwner(
+            "345",
+            0x7D93107852454857C511b0c1E590b59B4cE34758
+        ), CardUtils.CardAttr(
+            false,
+            false
+        ), CardUtils.CardExtra(
+            "Fire",
+            "Arkanthe",
+            "A",
+            2,
+            2,
+            4,
+            false
+        ) );
+      
     }
 
     fallback() external payable {}
-
     receive() external payable {}  
-
+    event MergeCard(uint256 indexed tokenId, uint256[] burnedTokenId);
+    event MintCard(address indexed sender, uint256 indexed tokenId, CardUtils.CardType typeOfCard, CardUtils.Card base, CardUtils.CardInfo info, CardUtils.CardOwner owner, CardUtils.CardAttr attr, CardUtils.CardExtra extra);
+    event UpdateCard(uint256 indexed tokenId, CardUtils.CardType typeOfCard, CardUtils.Card base, CardUtils.CardInfo info,  CardUtils.CardOwner owner, CardUtils.CardAttr attr, CardUtils.CardExtra extra);
+    event BurnToken(address indexed sender, uint256  indexed tokenId);
+    event transferNft(address indexed from, address indexed to, uint256 indexed tokenId);
+    event RegisterMarketPlace(address indexed marketPlaceApprover, bool isApproved);
     function tokenURI(uint256 tokenId) public override view returns(string memory) {
         require(cardTypes[tokenId] != CardUtils.CardType.None, "Card does not exists");
         if (cardTypes[tokenId] == CardUtils.CardType.Battle)
@@ -173,7 +171,7 @@ contract CardContract is ERC721, Ownable {
         //************************** */
         // what if we did it with a FLAG? frag indicating the number of "medias" to be selected, this flag is set both when minta and when marge
 
-
+        emit MergeCard(tokenId, burnedTokenId);
         return tokenId;
     }
 
@@ -214,19 +212,13 @@ contract CardContract is ERC721, Ownable {
 
         CARDS[newTokenId] = base;
 
-        emit CardMinted(newTokenId, base);
+        emit MintCard(msg.sender, newTokenId, typeOfCard, base, info, owner, attr, extra);
     }
-
-    event CardMinted (
-        uint256 indexed tokenId,
-        CardUtils.Card base
-    );
-
 
     function registerMarketPlace(address marketPlace) public {
         setApprovalForAll(marketPlace, true);
+         emit RegisterMarketPlace(marketPlace, true);
     }
-
 
    //TODO: it would be to reassign name, description, etc., with the variables I already have, and not what they pass to me
    //       so at least I don't risk running into mistakes
@@ -238,44 +230,47 @@ contract CardContract is ERC721, Ownable {
     CardUtils.CardOwner memory owner,
     CardUtils.CardAttr memory attr,
     CardUtils.CardExtra memory extra
-) public{
-    CardUtils.CardType typeOfCard = cardTypes[tokenId];
-    require(typeOfCard != CardUtils.CardType.None, "Card not exists");
+    ) public{
+        CardUtils.CardType typeOfCard = cardTypes[tokenId];
+        require(typeOfCard != CardUtils.CardType.None, "Card not exists");
 
-    if (typeOfCard == CardUtils.CardType.Battle) {
+        if (typeOfCard == CardUtils.CardType.Battle) {
 
-        CardUtils.BattleCard memory card = battleCard[tokenId];
-       
-        card.base = base;
-        card.info = info;
-        card.owner = owner;
-        card.attr = attr;
-        card.extra = extra;
+            CardUtils.BattleCard memory card = battleCard[tokenId];
+        
+            card.base = base;
+            card.info = info;
+            card.owner = owner;
+            card.attr = attr;
+            card.extra = extra;
 
-        card.base.cardType = typeOfCard;
-        battleCard[tokenId] = card;
-    } else {
+            card.base.cardType = typeOfCard;
+            battleCard[tokenId] = card;
+        } else {
 
-        CardUtils.NormalCard memory card = normalCard[tokenId];
+            CardUtils.NormalCard memory card = normalCard[tokenId];
 
-        card.base = base;
-        card.info = info;
-        card.owner = owner;
-        card.attr = attr;
+            card.base = base;
+            card.info = info;
+            card.owner = owner;
+            card.attr = attr;
 
-        card.base.cardType = typeOfCard;
-        normalCard[tokenId] = card;
+            card.base.cardType = typeOfCard;
+            normalCard[tokenId] = card;
+        }
+        emit UpdateCard(tokenId, typeOfCard, base, info,  owner, attr, extra);
     }
-}
 
-     //BURN
+    //BURN
     function burnToken(uint256 tokenId) public {
-      _burn( tokenId);
+        _burn(tokenId);
+        emit BurnToken(msg.sender, tokenId);
     }
 
     //TRANSFER
     function TransferNft(address from, address to, uint256 tokenId) public{
         safeTransferFrom(from, to, tokenId);
+        emit transferNft(from, to, tokenId);
     }
 
 }
